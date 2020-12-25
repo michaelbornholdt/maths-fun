@@ -1,6 +1,16 @@
 """Calculates domino tiling in an aztec Diamond.
 This script tiles dominos in a random order into a aztec diamong. By doing so you can see the effects of the autec diamond theory. Refer to the readme for more details.
 
+The tiling are saved in a dictionary with the coordinates as key and the state as values.
+The state can be either "x" meaning no movemnt or it can be n,s,e or w for the four cardinal directions. If a tile is marked e = east, for example, it will move to the east in the next round of expansion, through the move() function.
+
+The overall flow of the alg is: 
+1. Initiate diamond of size 1 (with random initial directions)
+2. Remove colliding blocks
+3. Move the blocks to their new position in a larger diomond
+4. Fill all gaps with random tiles
+Repeat 2-4 until the wanted size is reached.
+
 Example run from source:
 '''python aztec_diamond\aztec-diamond.py'''
 
@@ -13,7 +23,16 @@ import webbrowser
 
 
 class aztecDiamond:
+    """Class with all functions.
+    class saves the current tiling in the self.tile variable.
+    """
+
     def __init__(self, n):
+        """intiatlize class and create a diamond of size n.
+
+        Args:
+            n ([int]): size of the aztec diamond.
+        """
         assert type(n) == int, "init size must be integer"
         board = dict()
         for k in range(1, 2 * n + 1):
@@ -24,12 +43,18 @@ class aztecDiamond:
         self.tile = board
 
     def removeBadBlocks(self):
+        """Blocks which will collide in the coming move action will be removed here.
+
+        Returns:
+            tiles [dict]: the updated tile board.
+        """
         bd = self.tile
-        copy = dict(bd)
+        copy = dict(bd)  # to loop over all items, the 0 element needs to be removed.
         copy.pop(0)
         n = bd[0]
         for a, b in copy:
             try:
+                # check for the two different kind of colliding blocks.
                 if (
                     bd[(a, b)].lower() == "s"
                     and bd[(a + 1, b)].lower() == "s"
@@ -51,6 +76,11 @@ class aztecDiamond:
         return self
 
     def fillGoodBlocks(self):
+        """fills all "2x2" holes with two new tiles.
+
+        Returns:
+            tiles [dict]: board filled with new tiles. No holes anymore.
+        """
         bd = self.tile
         n = bd[0]
         copy = dict(bd)  # create and pop the 0 element
@@ -78,7 +108,12 @@ class aztecDiamond:
         self.tile = bd
         return self
 
-    def shuffle(self):
+    def move(self):
+        """move all tiles in their indicated direction. In this step, the larger board is also initialized and then used from now onward.
+
+        Returns:
+            tiles [dict]: board with moved tiles.
+        """
         bd = self.tile
         x = aztecDiamond(bd[0] + 1)
         board = x.tile
@@ -96,6 +131,12 @@ class aztecDiamond:
         return x
 
     def __str__(self):
+        """make a string out of the dict to be able to print in command line.
+        Example: print(str(bd))
+
+        Returns:
+            board [str]: string of diamond strcutrue
+        """
         bd = self.tile
         n = bd[0]
         s = ""
@@ -110,6 +151,11 @@ class aztecDiamond:
         return s.replace("x", " ")
 
     def toSVG(self, out):
+        """Creates a html file out of the tiles which allows to have a visual representation of the dict.
+
+        Args:
+            out ([str]): name of the output file
+        """
         ADpage = open(out, "w")
         n = self.tile[0]
         size = 500
@@ -148,6 +194,12 @@ class aztecDiamond:
 
 
 def open_web(filename):
+    """Opens the output file in the chrome webbrowser. When using, the registered location of the browser needs to be adapted.
+
+    Args:
+        filename ([type]): [description]
+    """
+    # adapt htis line for personal use.
     webbrowser.register(
         "chrome",
         None,
@@ -159,10 +211,13 @@ def open_web(filename):
 
 
 if __name__ == "__main__":
+    """Executes the algorithm and ascs for the size of the aztec diamond."""
     bd = aztecDiamond(1).fillGoodBlocks()
     m = int(input("Aztec Diamond size? "))
     for x in range(m - 1):
-        bd = bd.removeBadBlocks().shuffle().fillGoodBlocks()
+        bd = bd.removeBadBlocks().move().fillGoodBlocks()
+        if x == int(m / 2):
+            print(f"Half way there! Your at n = {x} now")
     # print(str(bd))
     name = "aztec_diamond/out.html"
     bd.toSVG(name)
