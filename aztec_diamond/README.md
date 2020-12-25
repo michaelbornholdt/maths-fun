@@ -26,8 +26,13 @@ that is, for every vertex there is exactly one edge in the set with that vertex 
 
 
 # Algorithm
-The aztec-diamond.py srcipt tiles dominos in a random order into a aztec diamond. By doing so you can see the effects of the aztec diamond theory. The "trick" in this case is that we don't actually find all possible tilings, since this would take some time. The number of options scales with $2^{n(n+1)/2}$. For n=20 that is about 2^200 which is around 10^60. For comparisson, the number of Atoms in the universe is around 10^80. So instead of computing all options, you generate a random setting via an expanding scheme. The algorithm follows the steps described in this [video](https://youtu.be/Yy7Q8IWNfHM?t=1209).
+The aztec-diamond.py srcipt tiles dominos in a random order into a aztec diamond. By doing so you can see the effects of the aztec diamond theory. The "trick" in this case is that we don't actually find all possible tilings, since this would take some time. The number of options scales with $2^{n(n+1)/2}$. For n=20 that is about 2^200 which is around 10^60. For comparisson, the number of Atoms in the universe is around 10^80. So instead of computing all options, you generate a random setting via an expanding scheme. 
+
+The algorithm follows the steps described in this [video](https://youtu.be/Yy7Q8IWNfHM?t=1209).
 
 Example run from source:
-'''python aztec_diamond\aztec-diamond.py'''
+```
+python aztec_diamond\aztec-diamond.py
+```
 Runniing saves a file with the resulting picture as "out.html" to this folder.
+It also opens the html file in your browser to view.
